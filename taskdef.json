@@ -12,6 +12,24 @@
       "essential": true,
       "portMappings": [
         { "containerPort": 3000, "protocol": "tcp" }
+<<<<<<< HEAD
+=======
+      ],
+      "environment": [
+        { "name": "DATABASE_URL", "value": "postgres://notesuser:NotesDbPass123%21@notes-db.chkmwse08ox2.eu-north-1.rds.amazonaws.com:5432/postgres" },
+        { "name": "DB_HOST", "value": "notes-db.chkmwse08ox2.eu-north-1.rds.amazonaws.com" },
+        { "name": "DB_NAME", "value": "postgres" },
+        { "name": "DB_PASSWORD", "value": "NotesDbPass123!" },
+        { "name": "DB_PORT", "value": "5432" },
+        { "name": "DB_SSL", "value": "true" },
+        { "name": "DB_USER", "value": "notesuser" },
+        { "name": "PGDATABASE", "value": "postgres" },
+        { "name": "PGHOST", "value": "notes-db.chkmwse08ox2.eu-north-1.rds.amazonaws.com" },
+        { "name": "PGPASSWORD", "value": "NotesDbPass123!" },
+        { "name": "PGPORT", "value": "5432" },
+        { "name": "PGUSER", "value": "notesuser" },
+        { "name": "PORT", "value": "3000" }
+>>>>>>> 6c646cadd92eaef897340c7f52ad25333d151692
       ]
     }
   ]
