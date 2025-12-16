@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     AWS_REGION: eu-north-1
-    ECR_REPO: notes-backend
+    ECR_REPO: aws-notes-backend
     CONTAINER_NAME: notes-backend
 
 phases:
