@@ -1,0 +1,18 @@
+{
+  "family": "notes-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::054656134995:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "notes-backend",
+      "image": "<IMAGE_URI>",
+      "essential": true,
+      "portMappings": [
+        { "containerPort": 3000, "protocol": "tcp" }
+      ]
+    }
+  ]
+}
