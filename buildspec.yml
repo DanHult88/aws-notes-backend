@@ -1,0 +1,34 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: eu-north-1
+    ECR_REPO: aws-notes-backend
+    CONTAINER_NAME: notes-backend
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - ECR_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - IMAGE_TAG_SHORT=$(echo $IMAGE_TAG | cut -c 1-7)
+
+  build:
+    commands:
+      - echo Build started on $(date)
+      - docker build -t ${ECR_URI}:${IMAGE_TAG_SHORT} .
+      - docker tag ${ECR_URI}:${IMAGE_TAG_SHORT} ${ECR_URI}:latest
+
+  post_build:
+    commands:
+      - echo Pushing images...
+      - docker push ${ECR_URI}:${IMAGE_TAG_SHORT}
+      - docker push ${ECR_URI}:latest
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "${ECR_URI}:${IMAGE_TAG_SHORT}" > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
