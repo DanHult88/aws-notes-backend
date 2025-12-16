@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     AWS_REGION: eu-north-1
-    ECR_REPO: aws-notes-backend
+    ECR_REPO: notes-backend
     CONTAINER_NAME: notes-backend
 
 phases:
@@ -31,4 +31,6 @@ phases:
 
 artifacts:
   files:
+    - appspec.yaml
+    - taskdef.json
     - imagedefinitions.json
