@@ -15,8 +15,8 @@ phases:
       - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
       - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
       - IMAGE_TAG_SHORT=$(echo $IMAGE_TAG | cut -c 1-7)
-      - echo "Using image tag: ${IMAGE_TAG_SHORT}"
-      - echo "ECR_URI: ${ECR_URI}"
+      - echo "Using image tag ${IMAGE_TAG_SHORT}"
+      - echo "ECR uri ${ECR_URI}"
 
   build:
     commands:
@@ -33,25 +33,20 @@ phases:
       - echo "Rendering image into taskdef.json..."
       - sed -i "s|<IMAGE_URI>|${ECR_URI}:${IMAGE_TAG_SHORT}|g" taskdef.json
 
-      - echo "Create imagedefinitions.json (harmless even if CodeDeploy ECS doesn't use it)..."
+      - echo "Creating imagedefinitions.json..."
       - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "${ECR_URI}:${IMAGE_TAG_SHORT}" > imagedefinitions.json
 
-      - echo "Verify <IMAGE_URI> is gone (fail build if not)..."
-      - grep -n "<IMAGE_URI>" taskdef.json && (echo "ERROR: <IMAGE_URI> still present in taskdef.json" && exit 1) || echo "OK: image rendered"
+      - echo "Verify IMAGE was rendered..."
+      - grep -n "<IMAGE_URI>" taskdef.json && (echo "ERROR still has IMAGE placeholder" && exit 1) || echo "OK image rendered"
 
-      - echo "Validate that taskdef.json is valid JSON (fail build if invalid)..."
+      - echo "Validate taskdef.json is valid JSON..."
       - python -m json.tool taskdef.json > /dev/null
 
-      - echo "Rendered taskdef.json image line:"
+      - echo "Show image lines:"
       - grep -n '"image"' taskdef.json || true
 
-      - echo "Artifacts present in current directory:"
-      - ls -la appspec.yaml taskdef.json imagedefinitions.json
-
-      - echo "Current directory:"
-      - pwd
-      - echo "Top-level files (debug):"
-      - find . -maxdepth 2 -type f -print
+      - echo "List artifacts:"
+      - ls -la
 
 artifacts:
   files:
